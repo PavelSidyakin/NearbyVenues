@@ -11,7 +11,7 @@
         android:id="@+id/button_near_venues_search_find_me"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/near_venues_search_button_find_me"
+        android:text="@string/near_venues_search_button_locate_me"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
