@@ -7,7 +7,7 @@ data class Result (
     val geometry: Geometry,
     val place_id: String,
     val name: String,
-    val opening_hours: OpeningHours,
+    val opening_hours: OpeningHours?,
     val rating: Float,
     val types: List<String>
 

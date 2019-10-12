@@ -21,34 +21,39 @@ class NearVenuesSearchRepositoryImpl
     constructor(private val googleNearbySearchDataProvider: GoogleNearbySearchDataProvider)
     : NearVenuesSearchRepository {
 
-    override suspend fun requestVenues(
-        location: Coordinates,
-        radius: Int,
-        venueType: VenueType
-    ): NearVenuesSearchRequestResult {
+    override suspend fun requestVenues(location: Coordinates, venueType: VenueType): NearVenuesSearchRequestResult {
+        log { i(TAG, "NearVenuesSearchRepositoryImpl.requestVenues(). location = [${location}], venueType = [${venueType}]") }
+
+        return requestVenuesImpl { googleNearbySearchDataProvider.requestVenues(location, convertVenueType2GoogleTypeString(venueType)) }
+    }
+
+    override suspend fun requestVenuesNextPage(pageToken: String): NearVenuesSearchRequestResult {
+        log { i(TAG, "NearVenuesSearchRepositoryImpl.requestVenuesNextPage(). pageToken = [${pageToken}]") }
+        return requestVenuesImpl { googleNearbySearchDataProvider.requestVenuesNextPage(pageToken) }
+    }
+
+    private suspend fun requestVenuesImpl(requestBlock: suspend () -> GoogleNearbySearchRequestResult): NearVenuesSearchRequestResult {
         try {
 
-            log { i(TAG, "NearVenuesSearchRepositoryImpl.requestVenues(). location = [${location}], radius = [${radius}], venueType = [${venueType}]") }
+            val googleNearbySearchRequestResult: GoogleNearbySearchRequestResult = requestBlock()
 
-            val googleNearbySearchRequestResult: GoogleNearbySearchRequestResult =
-                googleNearbySearchDataProvider.requestVenues(location, radius, convertVenueType2GoogleTypeString(venueType))
-
-            log { i(TAG, "NearVenuesSearchRepositoryImpl.requestVenues() googleNearbySearchRequestResult=$googleNearbySearchRequestResult") }
+            log { i(TAG, "NearVenuesSearchRepositoryImpl.requestVenuesImpl() googleNearbySearchRequestResult=$googleNearbySearchRequestResult") }
 
             if (googleNearbySearchRequestResult.resultCode != GoogleNearbySearchRequestResultCode.OK) {
-                return NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.GENERAL_ERROR, null)
+                return NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.GENERAL_ERROR, null, null)
             }
 
             if (googleNearbySearchRequestResult.data == null) {
-                return NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.GENERAL_ERROR, null)
+                return NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.GENERAL_ERROR, null, null)
             }
 
             val data: NearVenuesSearchRequestData =
                 convertGoogleNearbySearchRequestData2NearVenuesSearchRequestData(googleNearbySearchRequestResult.data)
 
-            return NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.OK, data)
+            return NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.OK, data, googleNearbySearchRequestResult.data.nearbySearchResponse.next_page_token)
         } catch (throwable: Throwable) {
-            return NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.GENERAL_ERROR, null)
+            log { w(TAG, "NearVenuesSearchRepositoryImpl.requestVenuesImpl()", throwable) }
+            return NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.GENERAL_ERROR, null, null)
         }
     }
 
@@ -61,7 +66,7 @@ class NearVenuesSearchRepositoryImpl
         return VenueData(Coordinates(result.geometry.location.lat, result.geometry.location.lng),
             result.place_id,
             result.name,
-            result.opening_hours.open_now,
+            result.opening_hours?.open_now,
             result.rating,
             result.types.mapNotNull { convertGoogleTypeString2VenueType(it) })
     }

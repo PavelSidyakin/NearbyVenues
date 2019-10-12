@@ -22,41 +22,41 @@ class GoogleNearbySearchDataProviderImpl
 
     private val retrofit: Retrofit by lazy { createRetrofit() }
 
-    override suspend fun requestVenues(location: Coordinates, radius: Int, type: String): GoogleNearbySearchRequestResult {
+    override suspend fun requestVenues(location: Coordinates, type: String): GoogleNearbySearchRequestResult {
 
-        log { i(TAG, "GoogleNearbySearchDataProviderImpl.requestVenues(). location = [${location}], radius = [${radius}], type = [${type}]") }
+        log { i(TAG, "GoogleNearbySearchDataProviderImpl.requestVenues(). location = [${location}], type = [${type}]") }
 
+        return requestVenuesImpl { createNearbySearchService().nearbySearch(convertLocation2String(location), type) }
+    }
+
+    override suspend fun requestVenuesNextPage(pageToken: String): GoogleNearbySearchRequestResult {
+        log { i(TAG, "GoogleNearbySearchDataProviderImpl.requestVenuesNextPage(). pageToken = [${pageToken}]") }
+
+        return requestVenuesImpl { createNearbySearchNextPageService().nearbySearchNextPage(pageToken) }
+    }
+
+    private suspend fun requestVenuesImpl(requestBlock : suspend () -> NearbySearchResponse): GoogleNearbySearchRequestResult {
         try {
 
-            val nearbySearchResponse: NearbySearchResponse =
-                createNearbySearchService().nearbySearch(
-                    convertLocation2String(location),
-                    radius,
-                    type
-                )
+            val nearbySearchResponse: NearbySearchResponse = requestBlock()
 
-            log { i(TAG, "GoogleNearbySearchDataProviderImpl.requestVenues() nearbySearchResponse=$nearbySearchResponse") }
+            log { i(TAG, "GoogleNearbySearchDataProviderImpl.requestVenuesImpl() nearbySearchResponse=$nearbySearchResponse") }
 
             return if (nearbySearchResponse.status != "OK") {
-                GoogleNearbySearchRequestResult(
-                    GoogleNearbySearchRequestResultCode.GENERAL_ERROR,
-                    null
-                )
+                GoogleNearbySearchRequestResult(GoogleNearbySearchRequestResultCode.GENERAL_ERROR, null)
             } else {
-                GoogleNearbySearchRequestResult(
-                    GoogleNearbySearchRequestResultCode.OK,
-                    GoogleNearbySearchRequestData(nearbySearchResponse)
-                )
+                GoogleNearbySearchRequestResult(GoogleNearbySearchRequestResultCode.OK, GoogleNearbySearchRequestData(nearbySearchResponse))
             }
+
         } catch (throwable: Throwable) {
-            log { w(TAG, "GoogleNearbySearchDataProviderImpl.requestVenues(). location = [${location}], radius = [${radius}], type = [${type}]", throwable) }
-            return GoogleNearbySearchRequestResult(
-                GoogleNearbySearchRequestResultCode.GENERAL_ERROR,
-                null
-            )
+            log { w(TAG, "GoogleNearbySearchDataProviderImpl.requestVenuesImpl()", throwable) }
+
+            return GoogleNearbySearchRequestResult(GoogleNearbySearchRequestResultCode.GENERAL_ERROR, null)
 
         }
+
     }
+
 
     private fun createRetrofit(): Retrofit {
         val interceptor = HttpLoggingInterceptor {message ->
@@ -79,11 +79,20 @@ class GoogleNearbySearchDataProviderImpl
     }
 
     private interface NearbySearchService {
-        @GET("json?key=${API_KEY}")
+        @GET("json?key=${API_KEY}&rankby=distance")
         suspend fun nearbySearch(
             @Query("location") location: String,
-            @Query("radius") radius: Int,
             @Query("type") type: String): NearbySearchResponse
+    }
+
+    private fun createNearbySearchNextPageService(): NearbySearchNextPageService {
+        return retrofit.create(NearbySearchNextPageService::class.java)
+    }
+
+    private interface NearbySearchNextPageService {
+        @GET("json?key=${API_KEY}&rankby=distance")
+        suspend fun nearbySearchNextPage(
+            @Query("pagetoken") pagetoken: String): NearbySearchResponse
     }
 
     private fun convertLocation2String(location: Coordinates): String {

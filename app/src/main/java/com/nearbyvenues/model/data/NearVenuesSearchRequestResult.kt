@@ -2,5 +2,6 @@ package com.nearbyvenues.model.data
 
 data class NearVenuesSearchRequestResult(
     val resultCode: NearVenuesSearchRequestResultCode,
-    val data: NearVenuesSearchRequestData?
+    val data: NearVenuesSearchRequestData?,
+    val nextPageToken: String?
 )

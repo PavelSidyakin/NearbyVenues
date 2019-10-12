@@ -6,6 +6,8 @@ import com.nearbyvenues.model.domain.VenueType
 
 interface NearVenuesSearchRepository {
 
-    suspend fun requestVenues(location: Coordinates, radius: Int, venueType: VenueType): NearVenuesSearchRequestResult
+    suspend fun requestVenues(location: Coordinates, venueType: VenueType): NearVenuesSearchRequestResult
+
+    suspend fun requestVenuesNextPage(pageToken: String): NearVenuesSearchRequestResult
 
 }

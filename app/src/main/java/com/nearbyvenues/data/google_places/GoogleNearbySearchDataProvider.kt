@@ -5,10 +5,8 @@ import com.nearbyvenues.model.Coordinates
 
 interface GoogleNearbySearchDataProvider {
 
-    suspend fun requestVenues(
-        location: Coordinates,
-        radius: Int,
-        type: String
-    ): GoogleNearbySearchRequestResult
+    suspend fun requestVenues(location: Coordinates, type: String): GoogleNearbySearchRequestResult
+
+    suspend fun requestVenuesNextPage(pageToken: String): GoogleNearbySearchRequestResult
 
 }

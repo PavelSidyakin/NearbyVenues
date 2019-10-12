@@ -7,7 +7,7 @@ data class VenueData (
     val coordinates: Coordinates,
     val id: String,
     val name: String,
-    val openNow: Boolean,
+    val openNow: Boolean?,
     val rating: Float,
     val types: List<VenueType>
 )

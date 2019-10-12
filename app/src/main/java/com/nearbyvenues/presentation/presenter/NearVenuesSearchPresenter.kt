@@ -4,11 +4,14 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.nearbyvenues.domain.LocationInteractor
 import com.nearbyvenues.domain.data.NearVenuesSearchRepository
+import com.nearbyvenues.model.Coordinates
+import com.nearbyvenues.model.data.NearVenuesSearchRequestResult
 import com.nearbyvenues.model.domain.VenueType
 import com.nearbyvenues.presentation.view.NearVenuesSearchView
 import com.nearbyvenues.utils.DispatcherProvider
 import com.nearbyvenues.utils.logs.log
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import permissions.dispatcher.PermissionRequest
 import javax.inject.Inject
@@ -45,9 +48,18 @@ class NearVenuesSearchPresenter
                 // Show location error
             }
 
-//            val result: NearVenuesSearchRequestResult = nearVenuesSearchRepository.requestVenues(Coordinates(-33.8670522,151.1957362), 10000, VenueType.RESTAURANT)
-//
-//            log { i(TAG, "result=$result") }
+            var result: NearVenuesSearchRequestResult = nearVenuesSearchRepository.requestVenues(Coordinates(-33.8670522,151.1957362), VenueType.RESTAURANT)
+
+            log { i(TAG, "result=$result") }
+
+            delay(3000)
+
+            if (!result.nextPageToken.isNullOrEmpty()) {
+
+                result = nearVenuesSearchRepository.requestVenuesNextPage(result.nextPageToken!!)
+            }
+
+
 
         }
 
