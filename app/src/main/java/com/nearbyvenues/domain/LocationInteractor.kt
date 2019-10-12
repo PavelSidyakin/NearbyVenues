@@ -4,6 +4,6 @@ import android.location.Location
 
 interface LocationInteractor {
 
-    suspend fun getLastLocation(): Location
+    suspend fun getLastLocation(): Location?
 
 }

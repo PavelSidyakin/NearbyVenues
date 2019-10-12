@@ -5,13 +5,17 @@ import android.location.Location
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.forEach
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.google.android.material.chip.Chip
 import com.nearbyvenues.R
 import com.nearbyvenues.TheApplication
+import com.nearbyvenues.model.domain.VenueType
 import com.nearbyvenues.presentation.presenter.NearVenuesSearchPresenter
 import kotlinx.android.synthetic.main.layout_near_venues_search.button_near_venues_search_find_me
+import kotlinx.android.synthetic.main.layout_near_venues_search.chgr_venues_filter_chips
 import kotlinx.android.synthetic.main.layout_near_venues_search.tv_press_locate_me_hint
 import kotlinx.android.synthetic.main.layout_near_venues_search.tv_your_location_text
 import permissions.dispatcher.NeedsPermission
@@ -65,6 +69,23 @@ class NearVenuesSearchActivity : MvpAppCompatActivity(), NearVenuesSearchView {
         dialogBuilder.setMessage(getString(R.string.near_venues_search_dialog_missing_permissions_text))
         dialogBuilder.setPositiveButton(R.string.dialog_ok_button, null)
         dialogBuilder.show()
+    }
+
+    override fun addChipForVenueType(venue: VenueType) {
+        val chip = Chip(this)
+
+        chip.isCheckable = true
+        chip.isClickable = true
+        chip.text = venue.name
+
+        chgr_venues_filter_chips.addView(chip)
+    }
+
+    override fun enableFilterVenueChips(enable: Boolean) {
+
+        chgr_venues_filter_chips.forEach { chip ->
+            chip.isEnabled = enable
+        }
     }
 
     // Permission dispatcher handlers

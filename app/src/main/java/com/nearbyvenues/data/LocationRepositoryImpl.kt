@@ -21,7 +21,7 @@ class LocationRepositoryImpl
         LocationServices.getFusedLocationProviderClient(applicationProvider.applicationContext)
     }
 
-    override suspend fun getLastLocation(): Location = suspendCoroutine { continuation ->
+    override suspend fun getLastLocation(): Location? = suspendCoroutine { continuation ->
         fusedLocationClient.lastLocation.addOnSuccessListener { continuation.resume(it) }
             .addOnFailureListener { continuation.resumeWithException(it) }
     }

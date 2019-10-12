@@ -3,6 +3,7 @@ package com.nearbyvenues.presentation.presenter
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.nearbyvenues.domain.LocationInteractor
+import com.nearbyvenues.model.domain.VenueType
 import com.nearbyvenues.presentation.view.NearVenuesSearchView
 import com.nearbyvenues.utils.DispatcherProvider
 import kotlinx.coroutines.GlobalScope
@@ -19,13 +20,29 @@ class NearVenuesSearchPresenter
         private val dispatcherProvider: DispatcherProvider
     ) : MvpPresenter<NearVenuesSearchView>() {
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+
+        VenueType.values().forEach { venueType ->
+            viewState.addChipForVenueType(venueType)
+        }
+
+        viewState.enableFilterVenueChips(false)
+    }
 
     fun onLocateMePressed() {
         GlobalScope.launch(dispatcherProvider.main()) {
             val location = locationInteractor.getLastLocation()
 
-            viewState.setCurrentLocation(location)
-            viewState.showPressLocateMeWarning(false)
+            if (location != null) {
+
+                viewState.setCurrentLocation(location)
+                viewState.showPressLocateMeWarning(false)
+                viewState.enableFilterVenueChips(true)
+
+            } else {
+                // Show location error
+            }
 
         }
     }

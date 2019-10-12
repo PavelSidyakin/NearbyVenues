@@ -9,7 +9,7 @@ class LocationInteractorImpl
     constructor(private val locationRepository: LocationRepository)
     : LocationInteractor {
 
-    override suspend fun getLastLocation(): Location {
+    override suspend fun getLastLocation(): Location? {
         return locationRepository.getLastLocation()
     }
 
