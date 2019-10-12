@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.view.NearVenuesSearchActivity">
+
+
+    <Button
+        android:id="@+id/button_near_venues_search_find_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/near_venues_search_button_find_me"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/tv_your_location_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/near_venues_search_text_your_location_label"
+        app:layout_constraintTop_toBottomOf="@id/button_near_venues_search_find_me"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/tv_your_location_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintStart_toEndOf="@id/tv_your_location_label"
+        app:layout_constraintTop_toBottomOf="@id/button_near_venues_search_find_me"
+        />
+
+    <TextView
+        android:id="@+id/tv_press_locate_me_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/near_venues_search_text_press_locate_me_hint"
+        app:layout_constraintTop_toBottomOf="@id/tv_your_location_label"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/colorWarning"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
