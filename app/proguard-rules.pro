@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.nearbyvenues.model.GsonSerializable
+
+-keepclassmembers class ** implements com.nearbyvenues.model.GsonSerializable {
+    <fields>;
+}

@@ -1,7 +1,6 @@
 package com.nearbyvenues.presentation.view
 
 import android.Manifest
-import android.location.Location
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -12,6 +11,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.google.android.material.chip.Chip
 import com.nearbyvenues.R
 import com.nearbyvenues.TheApplication
+import com.nearbyvenues.model.Coordinates
 import com.nearbyvenues.model.domain.VenueType
 import com.nearbyvenues.presentation.presenter.NearVenuesSearchPresenter
 import kotlinx.android.synthetic.main.layout_near_venues_search.button_near_venues_search_find_me
@@ -45,8 +45,8 @@ class NearVenuesSearchActivity : MvpAppCompatActivity(), NearVenuesSearchView {
 
     }
 
-    override fun setCurrentLocation(location: Location) {
-        tv_your_location_text.text = getString(R.string.near_venues_search_text_your_location_text).format(location.latitude, location.longitude)
+    override fun setCurrentLocation(location: Coordinates) {
+        tv_your_location_text.text = getString(R.string.near_venues_search_text_your_location_text).format(location.lat, location.lng)
 
     }
 

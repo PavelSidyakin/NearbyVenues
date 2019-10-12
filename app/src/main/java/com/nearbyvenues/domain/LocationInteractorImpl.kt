@@ -1,7 +1,7 @@
 package com.nearbyvenues.domain
 
-import android.location.Location
 import com.nearbyvenues.domain.data.LocationRepository
+import com.nearbyvenues.model.Coordinates
 import javax.inject.Inject
 
 class LocationInteractorImpl
@@ -9,7 +9,7 @@ class LocationInteractorImpl
     constructor(private val locationRepository: LocationRepository)
     : LocationInteractor {
 
-    override suspend fun getLastLocation(): Location? {
+    override suspend fun getLastLocation(): Coordinates? {
         return locationRepository.getLastLocation()
     }
 

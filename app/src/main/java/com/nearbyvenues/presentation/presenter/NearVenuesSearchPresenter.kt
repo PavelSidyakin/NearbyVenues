@@ -3,6 +3,9 @@ package com.nearbyvenues.presentation.presenter
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.nearbyvenues.domain.LocationInteractor
+import com.nearbyvenues.domain.data.NearVenuesSearchRepository
+import com.nearbyvenues.model.Coordinates
+import com.nearbyvenues.model.data.NearVenuesSearchRequestResult
 import com.nearbyvenues.model.domain.VenueType
 import com.nearbyvenues.presentation.view.NearVenuesSearchView
 import com.nearbyvenues.utils.DispatcherProvider
@@ -18,6 +21,7 @@ class NearVenuesSearchPresenter
     @Inject
     constructor(
         private val locationInteractor: LocationInteractor,
+        val nearVenuesSearchRepository: NearVenuesSearchRepository,
         private val dispatcherProvider: DispatcherProvider
     ) : MvpPresenter<NearVenuesSearchView>() {
 
@@ -45,7 +49,13 @@ class NearVenuesSearchPresenter
                 // Show location error
             }
 
+            val result: NearVenuesSearchRequestResult = nearVenuesSearchRepository.requestVenues(Coordinates(-33.8670522,151.1957362), 10000, VenueType.RESTAURANT)
+
+            log { i(TAG, "result=$result") }
+
         }
+
+
     }
 
     fun onVenueFilterChanged(currentVenues: List<VenueType>) {

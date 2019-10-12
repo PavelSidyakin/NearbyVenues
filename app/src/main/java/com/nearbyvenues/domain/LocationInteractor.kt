@@ -1,9 +1,9 @@
 package com.nearbyvenues.domain
 
-import android.location.Location
+import com.nearbyvenues.model.Coordinates
 
 interface LocationInteractor {
 
-    suspend fun getLastLocation(): Location?
+    suspend fun getLastLocation(): Coordinates?
 
 }

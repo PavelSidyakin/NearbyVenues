@@ -66,6 +66,8 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-location:17.0.0'
 
+    implementation 'com.uchuhimo:kotlinx-bimap:1.2'
+
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
     testImplementation("org.mockito:mockito-core:3.0.0")
 

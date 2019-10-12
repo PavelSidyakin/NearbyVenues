@@ -1,8 +1,8 @@
 package com.nearbyvenues.domain.data
 
-import android.location.Location
+import com.nearbyvenues.model.Coordinates
 
 interface LocationRepository {
 
-    suspend fun getLastLocation(): Location?
+    suspend fun getLastLocation(): Coordinates?
 }
