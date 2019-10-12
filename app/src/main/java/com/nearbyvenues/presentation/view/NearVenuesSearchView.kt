@@ -9,10 +9,10 @@ import com.nearbyvenues.model.domain.VenueType
 
 interface NearVenuesSearchView : MvpView {
 
-    @StateStrategyType(OneExecutionStateStrategy::class)
+    @StateStrategyType(AddToEndSingleStrategy ::class)
     fun setCurrentLocation(location: Coordinates)
 
-    @StateStrategyType(OneExecutionStateStrategy::class)
+    @StateStrategyType(AddToEndSingleStrategy ::class)
     fun showPressLocateMeWarning(show: Boolean)
 
     @StateStrategyType(AddToEndSingleStrategy::class)
@@ -24,10 +24,10 @@ interface NearVenuesSearchView : MvpView {
     @StateStrategyType(AddToEndSingleStrategy::class)
     fun showGrantPermissionInSettingsDialog()
 
-    @StateStrategyType(OneExecutionStateStrategy::class)
-    fun addChipForVenueType(venue: VenueType)
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun addChipsForVenues(venues: List<VenueType>)
 
-    @StateStrategyType(OneExecutionStateStrategy::class)
+    @StateStrategyType(AddToEndSingleStrategy ::class)
     fun enableFilterVenueChips(enable: Boolean)
 
 }

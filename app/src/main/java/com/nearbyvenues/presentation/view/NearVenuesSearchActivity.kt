@@ -71,17 +71,20 @@ class NearVenuesSearchActivity : MvpAppCompatActivity(), NearVenuesSearchView {
         dialogBuilder.show()
     }
 
-    override fun addChipForVenueType(venue: VenueType) {
-        val chip = Chip(this)
+    override fun addChipsForVenues(venues: List<VenueType>) {
+        venues.forEach { venue->
+            val chip = Chip(this)
 
-        chip.isCheckable = true
-        chip.isClickable = true
-        chip.text = getVenueNameForVenueType(venue)
-        chip.tag = venue
+            chip.isCheckable = true
+            chip.isClickable = true
+            chip.text = getVenueNameForVenueType(venue)
+            chip.tag = venue
 
-        chip.setOnCheckedChangeListener { buttonView, isChecked -> onChipCheckedChanged() }
+            chip.setOnCheckedChangeListener { buttonView, isChecked -> onChipCheckedChanged() }
 
-        chgr_venues_filter_chips.addView(chip)
+            chgr_venues_filter_chips.addView(chip)
+        }
+
     }
 
     private fun onChipCheckedChanged() {
