@@ -6,6 +6,7 @@ import com.nearbyvenues.domain.LocationInteractor
 import com.nearbyvenues.model.domain.VenueType
 import com.nearbyvenues.presentation.view.NearVenuesSearchView
 import com.nearbyvenues.utils.DispatcherProvider
+import com.nearbyvenues.utils.logs.log
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import permissions.dispatcher.PermissionRequest
@@ -47,6 +48,11 @@ class NearVenuesSearchPresenter
         }
     }
 
+    fun onVenueFilterChanged(currentVenues: List<VenueType>) {
+        log { i(TAG, "onVenueFilterChanged($currentVenues)") }
+
+    }
+
     fun onShowRationaleForLocationPermission(request: PermissionRequest) {
         request.proceed()
     }
@@ -59,4 +65,7 @@ class NearVenuesSearchPresenter
         viewState.showGrantPermissionInSettingsDialog()
     }
 
+    companion object {
+        private const val TAG = "NearVenuesSearch"
+    }
 }
