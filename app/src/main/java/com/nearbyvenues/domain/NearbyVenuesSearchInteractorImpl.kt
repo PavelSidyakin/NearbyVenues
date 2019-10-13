@@ -1,6 +1,7 @@
 package com.nearbyvenues.domain
 
 import com.nearbyvenues.domain.data.LocationRepository
+import com.nearbyvenues.domain.data.NearbyVenuesSearchCacheRepository
 import com.nearbyvenues.domain.data.NearbyVenuesSearchRepository
 import com.nearbyvenues.model.Coordinates
 import com.nearbyvenues.model.VenueType
@@ -25,12 +26,14 @@ class NearbyVenuesSearchInteractorImpl
     @Inject
     constructor(
         private val nearbyVenuesSearchRepository: NearbyVenuesSearchRepository,
+        private val nearbyVenuesSearchCacheRepository: NearbyVenuesSearchCacheRepository,
         private val locationRepository: LocationRepository
     )
     : NearbyVenuesSearchInteractor {
 
     override suspend fun findVenues(location: Coordinates, venueTypes: List<VenueType>): NearbyVenuesSearchResult {
         log { i(TAG, "NearbyVenuesSearchInteractorImpl.findVenues(). location = [${location}], venueTypes = [${venueTypes}]") }
+
         return findNextVenuesImpl(location) { requestVenuesForList(location, venueTypes) }
     }
 
@@ -89,7 +92,19 @@ class NearbyVenuesSearchInteractorImpl
         val deferredList = mutableListOf<Deferred<Any>>()
         venueTypes.forEach { venueType ->
             deferredList.add(GlobalScope.async {
-                requestVenuesResults.add(nearbyVenuesSearchRepository.requestVenues(location, venueType))
+
+                val cacheResult: NearVenuesSearchRequestResult? = nearbyVenuesSearchCacheRepository.requestVenues(location, venueType)
+
+                log { i(TAG, "NearbyVenuesSearchInteractorImpl.requestVenuesForList(). cacheResult=$cacheResult") }
+                val result: NearVenuesSearchRequestResult?
+                result = cacheResult ?: nearbyVenuesSearchRepository.requestVenues(location, venueType)
+
+                requestVenuesResults.add(result)
+
+                if (cacheResult == null) {
+                    nearbyVenuesSearchCacheRepository.putRequestVenuesResult(location, venueType, result)
+                }
+
             })
 
         }

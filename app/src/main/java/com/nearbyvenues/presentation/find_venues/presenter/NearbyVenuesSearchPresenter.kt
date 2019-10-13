@@ -94,12 +94,17 @@ class NearbyVenuesSearchPresenter
 
         viewState.setCheckedChipsForVenues(currentVenues)
 
-        GlobalScope.launch {
+        if (currentVenues.isNotEmpty()) {
 
-            currentLocation?.let { currentLocation ->
-                viewState.updateVenueList(buildDataSource(currentLocation, currentVenues))
+            GlobalScope.launch {
+
+                currentLocation?.let { currentLocation ->
+                    viewState.updateVenueList(buildDataSource(currentLocation, currentVenues))
+                }
+
             }
-
+        } else {
+            viewState.clearList()
         }
 
     }
@@ -154,8 +159,8 @@ class NearbyVenuesSearchPresenter
 
     companion object {
         private const val TAG = "NearVenuesSearch"
-        const val DEFAULT_PAGE_SIZE = 20
-        const val DEFAULT_INITIAL_PAGE_SIZE_FACTOR = 2
+        const val DEFAULT_PAGE_SIZE = 10
+        const val DEFAULT_INITIAL_PAGE_SIZE_FACTOR = 1
 
     }
 }
