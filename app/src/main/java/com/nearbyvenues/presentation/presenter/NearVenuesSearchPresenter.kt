@@ -57,12 +57,13 @@ class NearVenuesSearchPresenter
 
             delay(3000)
 
-//            if (!result.nextPageToken.isNullOrEmpty()) {
-//
-//                result = nearVenuesSearchRepository.requestVenuesNextPage(result.nextPageToken!!)
-//            }
+            if (result.nextPageData  != null) {
+
+                result = nearbyVenuesSearchInteractor.findNextVenues(result.nextPageData!!)
+            }
 
 
+            log { i(TAG, "result=$result") }
 
         }
 
