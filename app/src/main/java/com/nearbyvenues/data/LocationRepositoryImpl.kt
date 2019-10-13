@@ -35,7 +35,14 @@ class LocationRepositoryImpl
     }
 
     override suspend fun getLastLocation(): Coordinates? = suspendCoroutine { continuation ->
-        fusedLocationClient.lastLocation.addOnSuccessListener { continuation.resume(Coordinates(it.latitude, it.longitude)) }
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    continuation.resume(Coordinates(location.latitude, location.longitude))
+                } else {
+                    continuation.resume(null)
+                }
+            }
             .addOnFailureListener { continuation.resumeWithException(it) }
     }
 }
