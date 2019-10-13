@@ -7,7 +7,6 @@ import com.nearbyvenues.model.VenueType
 import com.nearbyvenues.model.domain.NextPageData
 import com.nearbyvenues.model.domain.Venue
 import com.nearbyvenues.presentation.find_venues.presenter.NearbyVenuesSearchPresenter
-import com.searchimages.presentation.presenter.search.NearbyVenuesDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BroadcastChannel

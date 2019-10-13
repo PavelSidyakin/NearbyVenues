@@ -14,7 +14,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 import java.io.IOException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class GoogleNearbySearchDataProviderImpl

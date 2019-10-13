@@ -3,7 +3,6 @@ package com.nearbyvenues.presentation.find_venues.view
 import androidx.paging.PagedList
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.nearbyvenues.model.Coordinates
 import com.nearbyvenues.model.VenueType

@@ -12,7 +12,6 @@ import com.nearbyvenues.model.data.VenueData
 import com.nearbyvenues.model.domain.NearVenuesSearchResultCode
 import com.nearbyvenues.utils.logs.XLog
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doNothing
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.runBlocking
@@ -21,7 +20,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
 class `NearbyVenuesSearchInteractorImpl tests` {
@@ -80,29 +78,29 @@ class `NearbyVenuesSearchInteractorImpl tests` {
     @Nested
     inner class `When success repository result` {
 
-        val venue0Coordinates = Coordinates(0.1, 0.1)
-        val venue0Id = "venue0Id"
-        val venue0Name = "venue0Name"
-        val venue0OpenNow = true
-        val venue0Rating = 0.1f
-        val venue0Types = listOf(VenueType.RESTAURANT, VenueType.BAR)
+        private val venue0Coordinates = Coordinates(0.1, 0.1)
+        private val venue0Id = "venue0Id"
+        private val venue0Name = "venue0Name"
+        private val venue0OpenNow = true
+        private val venue0Rating = 0.1f
+        private val venue0Types = listOf(VenueType.RESTAURANT, VenueType.BAR)
 
-        val venue1Coordinates = Coordinates(1.1, 1.1)
-        val venue1Id = "venue1Id"
-        val venue1Name = "venue1Name"
-        val venue1OpenNow = true
-        val venue1Rating = 1.1f
-        val venue1Types = listOf(VenueType.CAFE)
+        private val venue1Coordinates = Coordinates(1.1, 1.1)
+        private val venue1Id = "venue1Id"
+        private val venue1Name = "venue1Name"
+        private val venue1OpenNow = true
+        private val venue1Rating = 1.1f
+        private val venue1Types = listOf(VenueType.CAFE)
 
-        val venue2Coordinates = Coordinates(2.2, 2.2)
-        val venue2Id = "venue2Id"
-        val venue2Name = "venue2Name"
-        val venue2OpenNow = true
-        val venue2Rating = 2.2f
-        val venue2Types = listOf(VenueType.BAR)
+        private val venue2Coordinates = Coordinates(2.2, 2.2)
+        private val venue2Id = "venue2Id"
+        private val venue2Name = "venue2Name"
+        private val venue2OpenNow = true
+        private val venue2Rating = 2.2f
+        private val venue2Types = listOf(VenueType.BAR)
 
-        val nextPageToken0 = "rjvriljfvjeri"
-        val nextPageToken1 = "werwvkjviktrji"
+        private val nextPageToken0 = "rjvriljfvjeri"
+        private val nextPageToken1 = "werwvkjviktrji"
         
         @BeforeEach
         fun beforeEachTest() {

@@ -1,4 +1,4 @@
-package com.searchimages.presentation.presenter.search
+package com.nearbyvenues.presentation.find_venues.presenter.recycler
 
 import androidx.paging.PageKeyedDataSource
 import com.nearbyvenues.domain.NearbyVenuesSearchInteractor
