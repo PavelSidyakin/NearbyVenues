@@ -18,12 +18,6 @@ interface NearVenuesSearchView : MvpView {
     fun showPressLocateMeWarning(show: Boolean)
 
     @StateStrategyType(AddToEndSingleStrategy::class)
-    fun showTurnOnLocationDialog()
-
-    @StateStrategyType(OneExecutionStateStrategy::class)
-    fun showGrantPermissionsDialog()
-
-    @StateStrategyType(AddToEndSingleStrategy::class)
     fun showGrantPermissionInSettingsDialog()
 
     @StateStrategyType(AddToEndSingleStrategy::class)

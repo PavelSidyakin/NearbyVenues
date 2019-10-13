@@ -113,10 +113,6 @@ class NearbyVenuesSearchPresenter
         request.proceed()
     }
 
-    fun onLocationPermissionsDenied() {
-
-    }
-
     fun onLocationPermissionsNeverAsAgain() {
         viewState.showGrantPermissionInSettingsDialog()
     }

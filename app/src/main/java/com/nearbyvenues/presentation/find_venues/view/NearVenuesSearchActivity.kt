@@ -84,12 +84,6 @@ class NearVenuesSearchActivity : MvpAppCompatActivity(), NearVenuesSearchView {
         tv_press_locate_me_hint.visibility = if (show) View.VISIBLE else View.INVISIBLE
     }
 
-    override fun showTurnOnLocationDialog() {
-    }
-
-    override fun showGrantPermissionsDialog() {
-    }
-
     override fun showGrantPermissionInSettingsDialog() {
         val dialogBuilder = AlertDialog.Builder(this)
 
