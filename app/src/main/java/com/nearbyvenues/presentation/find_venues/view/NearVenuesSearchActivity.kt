@@ -216,7 +216,6 @@ class NearVenuesSearchActivity : MvpAppCompatActivity(), NearVenuesSearchView {
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION)
     fun onLocationPermissionsDenied() {
-        presenter.onLocationPermissionsDenied()
     }
 
     @OnNeverAskAgain(
