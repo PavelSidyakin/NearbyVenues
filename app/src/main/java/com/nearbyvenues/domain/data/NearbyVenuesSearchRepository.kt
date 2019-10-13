@@ -4,7 +4,7 @@ import com.nearbyvenues.model.Coordinates
 import com.nearbyvenues.model.data.NearVenuesSearchRequestResult
 import com.nearbyvenues.model.VenueType
 
-interface NearVenuesSearchRepository {
+interface NearbyVenuesSearchRepository {
 
     suspend fun requestVenues(location: Coordinates, venueType: VenueType): NearVenuesSearchRequestResult
 

@@ -2,7 +2,7 @@ package com.nearbyvenues.di
 
 import com.nearbyvenues.data.ApplicationProviderImpl
 import com.nearbyvenues.data.LocationRepositoryImpl
-import com.nearbyvenues.data.NearVenuesSearchRepositoryImpl
+import com.nearbyvenues.data.NearbyVenuesSearchRepositoryImpl
 import com.nearbyvenues.data.google_places.GoogleNearbySearchDataProvider
 import com.nearbyvenues.data.google_places.GoogleNearbySearchDataProviderImpl
 import com.nearbyvenues.domain.LocationInteractor
@@ -11,7 +11,7 @@ import com.nearbyvenues.domain.NearbyVenuesSearchInteractor
 import com.nearbyvenues.domain.NearbyVenuesSearchInteractorImpl
 import com.nearbyvenues.domain.data.ApplicationProvider
 import com.nearbyvenues.domain.data.LocationRepository
-import com.nearbyvenues.domain.data.NearVenuesSearchRepository
+import com.nearbyvenues.domain.data.NearbyVenuesSearchRepository
 import com.nearbyvenues.utils.DispatcherProvider
 import com.nearbyvenues.utils.DispatcherProviderImpl
 import com.nearbyvenues.utils.NetworkUtils
@@ -49,7 +49,7 @@ abstract class AppModule {
 
     @Singleton
     @Binds
-    abstract fun provideNearVenuesSearchRepository(nearVenuesSearchRepositoryImpl: NearVenuesSearchRepositoryImpl): NearVenuesSearchRepository
+    abstract fun provideNearVenuesSearchRepository(nearVenuesSearchRepositoryImpl: NearbyVenuesSearchRepositoryImpl): NearbyVenuesSearchRepository
 
     @Singleton
     @Binds

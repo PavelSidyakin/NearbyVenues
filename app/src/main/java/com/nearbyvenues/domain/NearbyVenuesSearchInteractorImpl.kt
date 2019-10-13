@@ -1,7 +1,7 @@
 package com.nearbyvenues.domain
 
 import com.nearbyvenues.domain.data.LocationRepository
-import com.nearbyvenues.domain.data.NearVenuesSearchRepository
+import com.nearbyvenues.domain.data.NearbyVenuesSearchRepository
 import com.nearbyvenues.model.Coordinates
 import com.nearbyvenues.model.VenueType
 import com.nearbyvenues.model.data.NearVenuesSearchRequestResult
@@ -24,7 +24,7 @@ class NearbyVenuesSearchInteractorImpl
 
     @Inject
     constructor(
-        private val nearVenuesSearchRepository: NearVenuesSearchRepository,
+        private val nearbyVenuesSearchRepository: NearbyVenuesSearchRepository,
         private val locationRepository: LocationRepository
     )
     : NearbyVenuesSearchInteractor {
@@ -89,7 +89,7 @@ class NearbyVenuesSearchInteractorImpl
         val deferredList = mutableListOf<Deferred<Any>>()
         venueTypes.forEach { venueType ->
             deferredList.add(GlobalScope.async {
-                requestVenuesResults.add(nearVenuesSearchRepository.requestVenues(location, venueType))
+                requestVenuesResults.add(nearbyVenuesSearchRepository.requestVenues(location, venueType))
             })
 
         }
@@ -104,7 +104,7 @@ class NearbyVenuesSearchInteractorImpl
         val deferredList = mutableListOf<Deferred<Any>>()
         nextPageData.nextPageTokens.forEach { nextPageToken ->
             deferredList.add(GlobalScope.async {
-                requestVenuesResults.add(nearVenuesSearchRepository.requestVenuesNextPage(nextPageToken))
+                requestVenuesResults.add(nearbyVenuesSearchRepository.requestVenuesNextPage(nextPageToken))
             })
         }
 

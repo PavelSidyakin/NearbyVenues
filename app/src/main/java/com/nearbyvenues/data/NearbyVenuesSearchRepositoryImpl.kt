@@ -5,7 +5,7 @@ import com.nearbyvenues.data.google_places.model.GoogleNearbySearchRequestData
 import com.nearbyvenues.data.google_places.model.GoogleNearbySearchRequestResult
 import com.nearbyvenues.data.google_places.model.GoogleNearbySearchRequestResultCode
 import com.nearbyvenues.data.google_places.model.json.Result
-import com.nearbyvenues.domain.data.NearVenuesSearchRepository
+import com.nearbyvenues.domain.data.NearbyVenuesSearchRepository
 import com.nearbyvenues.model.Coordinates
 import com.nearbyvenues.model.data.NearVenuesSearchRequestData
 import com.nearbyvenues.model.data.NearVenuesSearchRequestResult
@@ -16,19 +16,19 @@ import com.nearbyvenues.utils.logs.log
 import com.uchuhimo.collections.biMapOf
 import javax.inject.Inject
 
-class NearVenuesSearchRepositoryImpl
+class NearbyVenuesSearchRepositoryImpl
     @Inject
     constructor(private val googleNearbySearchDataProvider: GoogleNearbySearchDataProvider)
-    : NearVenuesSearchRepository {
+    : NearbyVenuesSearchRepository {
 
     override suspend fun requestVenues(location: Coordinates, venueType: VenueType): NearVenuesSearchRequestResult {
-        log { i(TAG, "NearVenuesSearchRepositoryImpl.requestVenues(). location = [${location}], venueType = [${venueType}]") }
+        log { i(TAG, "NearbyVenuesSearchRepositoryImpl.requestVenues(). location = [${location}], venueType = [${venueType}]") }
 
         return requestVenuesImpl { googleNearbySearchDataProvider.requestVenues(location, convertVenueType2GoogleTypeString(venueType)) }
     }
 
     override suspend fun requestVenuesNextPage(pageToken: String): NearVenuesSearchRequestResult {
-        log { i(TAG, "NearVenuesSearchRepositoryImpl.requestVenuesNextPage(). pageToken = [${pageToken}]") }
+        log { i(TAG, "NearbyVenuesSearchRepositoryImpl.requestVenuesNextPage(). pageToken = [${pageToken}]") }
         return requestVenuesImpl { googleNearbySearchDataProvider.requestVenuesNextPage(pageToken) }
     }
 
@@ -37,7 +37,7 @@ class NearVenuesSearchRepositoryImpl
 
             val googleNearbySearchRequestResult: GoogleNearbySearchRequestResult = requestBlock()
 
-            log { i(TAG, "NearVenuesSearchRepositoryImpl.requestVenuesImpl() googleNearbySearchRequestResult=$googleNearbySearchRequestResult") }
+            log { i(TAG, "NearbyVenuesSearchRepositoryImpl.requestVenuesImpl() googleNearbySearchRequestResult=$googleNearbySearchRequestResult") }
 
             if (googleNearbySearchRequestResult.resultCode != GoogleNearbySearchRequestResultCode.OK) {
 
@@ -56,7 +56,7 @@ class NearVenuesSearchRepositoryImpl
 
             return NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.OK, data, googleNearbySearchRequestResult.data.nearbySearchResponse.next_page_token)
         } catch (throwable: Throwable) {
-            log { w(TAG, "NearVenuesSearchRepositoryImpl.requestVenuesImpl()", throwable) }
+            log { w(TAG, "NearbyVenuesSearchRepositoryImpl.requestVenuesImpl()", throwable) }
             return NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.GENERAL_ERROR, null, null)
         }
     }
