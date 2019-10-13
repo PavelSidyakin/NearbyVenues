@@ -23,7 +23,7 @@ class LocationRepositoryImpl
         // https://developers.google.com/maps/documentation/distance-matrix/intro#DistanceMatrixRequests
         // Temporary calc
 
-        val results = floatArrayOf()
+        val results = FloatArray(3)
 
         Location.distanceBetween(point1.lat, point1.lng, point2.lat, point2.lng, results)
 

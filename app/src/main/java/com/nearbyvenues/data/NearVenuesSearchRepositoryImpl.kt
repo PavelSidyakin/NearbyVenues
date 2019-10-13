@@ -11,7 +11,7 @@ import com.nearbyvenues.model.data.NearVenuesSearchRequestData
 import com.nearbyvenues.model.data.NearVenuesSearchRequestResult
 import com.nearbyvenues.model.data.NearVenuesSearchRequestResultCode
 import com.nearbyvenues.model.data.VenueData
-import com.nearbyvenues.model.domain.VenueType
+import com.nearbyvenues.model.VenueType
 import com.nearbyvenues.utils.logs.log
 import com.uchuhimo.collections.biMapOf
 import javax.inject.Inject

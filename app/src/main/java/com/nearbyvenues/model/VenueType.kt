@@ -1,4 +1,4 @@
-package com.nearbyvenues.model.domain
+package com.nearbyvenues.model
 
 enum class VenueType {
     BAR,

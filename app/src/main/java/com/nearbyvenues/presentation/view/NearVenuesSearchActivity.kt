@@ -12,7 +12,7 @@ import com.google.android.material.chip.Chip
 import com.nearbyvenues.R
 import com.nearbyvenues.TheApplication
 import com.nearbyvenues.model.Coordinates
-import com.nearbyvenues.model.domain.VenueType
+import com.nearbyvenues.model.VenueType
 import com.nearbyvenues.presentation.presenter.NearVenuesSearchPresenter
 import kotlinx.android.synthetic.main.layout_near_venues_search.button_near_venues_search_find_me
 import kotlinx.android.synthetic.main.layout_near_venues_search.chgr_venues_filter_chips
