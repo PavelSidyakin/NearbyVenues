@@ -40,7 +40,11 @@ class NearVenuesSearchRepositoryImpl
             log { i(TAG, "NearVenuesSearchRepositoryImpl.requestVenuesImpl() googleNearbySearchRequestResult=$googleNearbySearchRequestResult") }
 
             if (googleNearbySearchRequestResult.resultCode != GoogleNearbySearchRequestResultCode.OK) {
-                return NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.GENERAL_ERROR, null, null)
+
+                return when(googleNearbySearchRequestResult.resultCode) {
+                    GoogleNearbySearchRequestResultCode.NETWORK_ERROR -> NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.NETWORK_ERROR, null, null)
+                    else -> NearVenuesSearchRequestResult(NearVenuesSearchRequestResultCode.GENERAL_ERROR, null, null)
+                }
             }
 
             if (googleNearbySearchRequestResult.data == null) {

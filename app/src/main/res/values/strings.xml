@@ -13,10 +13,23 @@
     <string name="near_venues_search_dialog_missing_permissions_title">Missing permission</string>
     <string name="near_venues_search_dialog_missing_permissions_text">Grant location permissions in system setting</string>
 
+    <string name="near_venues_search_dialog_venue_details_title">Venue details</string>
+    <string name="near_venues_search_dialog_venue_details_rating">Rating: %.2f</string>
+    <string name="near_venues_search_dialog_venue_details_opened_now">Opened now</string>
+    <string name="near_venues_search_dialog_venue_details_closed_now">Closed now</string>
 
     <string name="near_venues_search_chip_bars">Bars</string>
     <string name="near_venues_search_chip_cafes">Cafes</string>
     <string name="near_venues_search_chip_restaurants">Restaurants</string>
+
+    <string name="near_venues_search_list_item_bar">Bar</string>
+    <string name="near_venues_search_list_item_cafe">Cafe</string>
+    <string name="near_venues_search_list_item_restaurant">Restaurant</string>
+    <string name="near_venues_search_list_item_distance">%.1f m</string>
+
+    <string name="near_venues_search_error_general">Error. Tap here to retry</string>
+    <string name="near_venues_search_error_no_network">Check internet connection. Tap here to retry</string>
+    <string name="near_venues_search_error_no_location">Failed to get current location. Turn on location service in system settings</string>
 
     <string name="dialog_ok_button">OK</string>
 

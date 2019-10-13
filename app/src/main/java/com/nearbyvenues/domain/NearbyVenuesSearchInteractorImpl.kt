@@ -1,6 +1,5 @@
 package com.nearbyvenues.domain
 
-import androidx.core.content.contentValuesOf
 import com.nearbyvenues.domain.data.LocationRepository
 import com.nearbyvenues.domain.data.NearVenuesSearchRepository
 import com.nearbyvenues.model.Coordinates
@@ -9,7 +8,7 @@ import com.nearbyvenues.model.data.NearVenuesSearchRequestResult
 import com.nearbyvenues.model.data.NearVenuesSearchRequestResultCode
 import com.nearbyvenues.model.data.VenueData
 import com.nearbyvenues.model.domain.NearVenuesSearchData
-import com.nearbyvenues.model.domain.NearVenuesSearchResult
+import com.nearbyvenues.model.domain.NearbyVenuesSearchResult
 import com.nearbyvenues.model.domain.NearVenuesSearchResultCode
 import com.nearbyvenues.model.domain.NextPageData
 import com.nearbyvenues.model.domain.Venue
@@ -30,28 +29,32 @@ class NearbyVenuesSearchInteractorImpl
     )
     : NearbyVenuesSearchInteractor {
 
-    override suspend fun findVenues(location: Coordinates, venueTypes: List<VenueType>): NearVenuesSearchResult {
+    override suspend fun findVenues(location: Coordinates, venueTypes: List<VenueType>): NearbyVenuesSearchResult {
         log { i(TAG, "NearbyVenuesSearchInteractorImpl.findVenues(). location = [${location}], venueTypes = [${venueTypes}]") }
         return findNextVenuesImpl(location) { requestVenuesForList(location, venueTypes) }
     }
 
-    override suspend fun findNextVenues(nextPageData: NextPageData): NearVenuesSearchResult {
+    override suspend fun findNextVenues(nextPageData: NextPageData): NearbyVenuesSearchResult {
         log { i(TAG, "NearbyVenuesSearchInteractorImpl.findNextVenues(). nextPageData = [${nextPageData}]") }
         return findNextVenuesImpl(nextPageData.location) { requestVenuesForNextPageData(nextPageData) }
     }
 
-    private suspend fun findNextVenuesImpl(location: Coordinates, block: suspend () -> List<NearVenuesSearchRequestResult>): NearVenuesSearchResult {
+    private suspend fun findNextVenuesImpl(location: Coordinates, block: suspend () -> List<NearVenuesSearchRequestResult>): NearbyVenuesSearchResult {
         try {
             val requestVenuesResults = block()
 
             log { i(TAG, "NearbyVenuesSearchInteractorImpl.findNextVenuesImpl(). requestVenuesResults=$requestVenuesResults") }
 
             val okCount = requestVenuesResults.count { it.resultCode == NearVenuesSearchRequestResultCode.OK }
+            val noNetWorkCount = requestVenuesResults.count { it.resultCode == NearVenuesSearchRequestResultCode.NETWORK_ERROR }
 
             log { i(TAG, "NearbyVenuesSearchInteractorImpl.findNextVenuesImpl(). okCount=$okCount") }
 
             if (okCount == 0) {
-                return NearVenuesSearchResult(NearVenuesSearchResultCode.GENERAL_ERROR, null, null)
+                if (noNetWorkCount > 0) {
+                    return NearbyVenuesSearchResult(NearVenuesSearchResultCode.NO_NETWORK_ERROR, null, null)
+                }
+                return NearbyVenuesSearchResult(NearVenuesSearchResultCode.GENERAL_ERROR, null, null)
             }
 
             val totalResult: NearVenuesSearchResultCode = if (okCount > 0 && okCount < requestVenuesResults.size) {
@@ -71,13 +74,13 @@ class NearbyVenuesSearchInteractorImpl
             val pageTokens: List<String> = requestVenuesResults.mapNotNull { it.nextPageToken }
                 .filter { it.isNotEmpty() }
 
-            return NearVenuesSearchResult(
+            return NearbyVenuesSearchResult(
                 totalResult,
                 NearVenuesSearchData(venueList),
                 if (pageTokens.isNotEmpty()) NextPageData(location, pageTokens) else null
             )
         } catch (throwable: Throwable) {
-            return NearVenuesSearchResult(NearVenuesSearchResultCode.GENERAL_ERROR, null, null)
+            return NearbyVenuesSearchResult(NearVenuesSearchResultCode.GENERAL_ERROR, null, null)
         }
     }
 
@@ -90,7 +93,8 @@ class NearbyVenuesSearchInteractorImpl
             })
 
         }
-        awaitAll(*deferredList.toTypedArray())
+
+        deferredList.awaitAll()
 
         return requestVenuesResults
     }
@@ -103,7 +107,8 @@ class NearbyVenuesSearchInteractorImpl
                 requestVenuesResults.add(nearVenuesSearchRepository.requestVenuesNextPage(nextPageToken))
             })
         }
-        awaitAll(*deferredList.toTypedArray())
+
+        deferredList.awaitAll()
 
         return requestVenuesResults
     }

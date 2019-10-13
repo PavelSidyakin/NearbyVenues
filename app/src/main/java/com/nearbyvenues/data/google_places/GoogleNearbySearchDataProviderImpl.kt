@@ -6,12 +6,15 @@ import com.nearbyvenues.data.google_places.model.GoogleNearbySearchRequestResult
 import com.nearbyvenues.data.google_places.model.json.NearbySearchResponse
 import com.nearbyvenues.model.Coordinates
 import com.nearbyvenues.utils.logs.log
+import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.io.IOException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class GoogleNearbySearchDataProviderImpl
@@ -32,6 +35,10 @@ class GoogleNearbySearchDataProviderImpl
     override suspend fun requestVenuesNextPage(pageToken: String): GoogleNearbySearchRequestResult {
         log { i(TAG, "GoogleNearbySearchDataProviderImpl.requestVenuesNextPage(). pageToken = [${pageToken}]") }
 
+        // Sometimes next page request returns INVALID_REQUEST
+        // if the request is performed very quickly after previous
+        delay(3000)
+
         return requestVenuesImpl { createNearbySearchNextPageService().nearbySearchNextPage(pageToken) }
     }
 
@@ -47,6 +54,11 @@ class GoogleNearbySearchDataProviderImpl
             } else {
                 GoogleNearbySearchRequestResult(GoogleNearbySearchRequestResultCode.OK, GoogleNearbySearchRequestData(nearbySearchResponse))
             }
+
+        } catch (ioException: IOException) {
+            log { w(TAG, "GoogleNearbySearchDataProviderImpl.requestVenuesImpl() ioException", ioException) }
+
+            return GoogleNearbySearchRequestResult(GoogleNearbySearchRequestResultCode.NETWORK_ERROR, null)
 
         } catch (throwable: Throwable) {
             log { w(TAG, "GoogleNearbySearchDataProviderImpl.requestVenuesImpl()", throwable) }
