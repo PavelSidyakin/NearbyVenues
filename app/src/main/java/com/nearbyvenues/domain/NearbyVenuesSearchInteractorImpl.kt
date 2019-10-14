@@ -101,7 +101,7 @@ class NearbyVenuesSearchInteractorImpl
 
                 requestVenuesResults.add(result)
 
-                if (cacheResult == null) {
+                if (cacheResult == null && result.resultCode == NearVenuesSearchRequestResultCode.OK) {
                     nearbyVenuesSearchCacheRepository.putRequestVenuesResult(location, venueType, result)
                 }
 
