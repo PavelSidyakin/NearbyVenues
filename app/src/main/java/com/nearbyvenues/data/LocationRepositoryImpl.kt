@@ -14,6 +14,8 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeoutOrNull
 
 class LocationRepositoryImpl
 
@@ -26,13 +28,17 @@ class LocationRepositoryImpl
         LocationServices.getFusedLocationProviderClient(applicationProvider.applicationContext)
     }
 
-    override suspend fun waitForLocation(timeout: Long): Coordinates? = suspendCoroutine { continuation ->
+    override suspend fun waitForLocation(timeout: Long): Coordinates? = withTimeoutOrNull(timeout) {
+        subscribeForLocation(timeout)
+    }
+
+    private suspend fun subscribeForLocation(maxWaitTime: Long): Coordinates? = suspendCancellableCoroutine { continuation ->
 
         val locationRequest = LocationRequest()
             .setPriority(LocationRequest.PRIORITY_LOW_POWER)
-            .setMaxWaitTime(timeout)
+            .setMaxWaitTime(maxWaitTime)
 
-        fusedLocationClient.requestLocationUpdates(locationRequest, object: LocationCallback() {
+        val locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 if (result.lastLocation != null) {
                     continuation.resume(Coordinates(result.lastLocation.latitude, result.lastLocation.longitude))
@@ -43,10 +49,12 @@ class LocationRepositoryImpl
             }
 
             override fun onLocationAvailability(locationAvailability: LocationAvailability) {
-
             }
-        }, null)
+        }
 
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+
+        continuation.invokeOnCancellation { fusedLocationClient.removeLocationUpdates(locationCallback) }
     }
 
     override suspend fun getLastLocation(): Coordinates? = suspendCoroutine { continuation ->
@@ -64,7 +72,7 @@ class LocationRepositoryImpl
     override suspend fun calcDistanceBetweenCoordinates(point1: Coordinates, point2: Coordinates): Double {
         // TODO: calc with distance matrix api:
         // https://developers.google.com/maps/documentation/distance-matrix/intro#DistanceMatrixRequests
-        // Temporary calc
+        // Temporary calculate straight distance between points
 
         val results = FloatArray(3)
 
