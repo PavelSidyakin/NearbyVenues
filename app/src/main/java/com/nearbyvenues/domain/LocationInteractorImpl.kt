@@ -9,8 +9,15 @@ class LocationInteractorImpl
     constructor(private val locationRepository: LocationRepository)
     : LocationInteractor {
 
-    override suspend fun getLastLocation(): Coordinates? {
-        return locationRepository.getLastLocation()
+    override suspend fun requestLocation(timeout: Long): Coordinates? {
+        var location: Coordinates? = locationRepository.getLastLocation()
+
+        if (location == null) {
+            location = locationRepository.waitForLocation(timeout)
+        }
+
+
+        return location
     }
 
 }

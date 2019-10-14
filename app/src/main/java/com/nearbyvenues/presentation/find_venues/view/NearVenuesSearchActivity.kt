@@ -21,6 +21,7 @@ import com.nearbyvenues.utils.RecyclerViewOnItemClickListener
 import kotlinx.android.synthetic.main.layout_near_venues_search.button_near_venues_search_find_me
 import kotlinx.android.synthetic.main.layout_near_venues_search.chgr_venues_filter_chips
 import kotlinx.android.synthetic.main.layout_near_venues_search.pb_venues_search
+import kotlinx.android.synthetic.main.layout_near_venues_search.pb_waiting_for_location
 import kotlinx.android.synthetic.main.layout_near_venues_search.rv_venues_search_list
 import kotlinx.android.synthetic.main.layout_near_venues_search.tv_location_error
 import kotlinx.android.synthetic.main.layout_near_venues_search.tv_press_locate_me_hint
@@ -149,8 +150,16 @@ class NearVenuesSearchActivity : MvpAppCompatActivity(), NearVenuesSearchView {
         }
     }
 
-    override fun showProgress(show: Boolean) {
+    override fun showDownloadingItemsProgress(show: Boolean) {
         pb_venues_search.visibility = if (show) View.VISIBLE else View.INVISIBLE
+    }
+
+    override fun showWaitingForLocationProgress(show: Boolean) {
+        pb_waiting_for_location.visibility = if (show) View.VISIBLE else View.INVISIBLE
+    }
+
+    override fun enableLocateMeButton(enable: Boolean) {
+        button_near_venues_search_find_me.isEnabled = enable
     }
 
     override fun showNoConnectionError(show: Boolean) {

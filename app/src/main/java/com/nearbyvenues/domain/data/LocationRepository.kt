@@ -6,5 +6,7 @@ interface LocationRepository {
 
     suspend fun getLastLocation(): Coordinates?
 
+    suspend fun waitForLocation(timeout: Long): Coordinates?
+
     suspend fun calcDistanceBetweenCoordinates(point1: Coordinates, point2: Coordinates): Double
 }

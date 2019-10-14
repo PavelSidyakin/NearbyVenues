@@ -62,18 +62,25 @@ class NearbyVenuesSearchPresenter
     fun onLocateMePressed() {
         GlobalScope.launch(dispatcherProvider.main()) {
             viewState.showCannotLocateError(false)
+            viewState.showWaitingForLocationProgress(true)
+            viewState.enableLocateMeButton(false)
 
-            currentLocation = locationInteractor.getLastLocation()
+            currentLocation = locationInteractor.requestLocation(WAIT_LOCATION_TIMEOUT_MS)
+
+            viewState.showWaitingForLocationProgress(false)
 
             if (currentLocation != null) {
 
                 currentLocation?.let { viewState.setCurrentLocation(it) }
                 viewState.showPressLocateMeWarning(false)
                 viewState.enableFilterVenueChips(true)
-
             } else {
                 viewState.showCannotLocateError(true)
+                viewState.showPressLocateMeWarning(true)
+                viewState.enableFilterVenueChips(false)
             }
+
+            viewState.enableLocateMeButton(true)
         }
     }
 
@@ -130,12 +137,12 @@ class NearbyVenuesSearchPresenter
     // Data source callbacks
 
     fun onRequestStarted() {
-        viewState.showProgress(true)
+        viewState.showDownloadingItemsProgress(true)
     }
 
     fun onResult(nearVenuesSearchResultCode: NearVenuesSearchResultCode) {
         log { i(TAG, "NearbyVenuesSearchPresenter.onResult(). nearVenuesSearchResultCode = [${nearVenuesSearchResultCode}]") }
-        viewState.showProgress(false)
+        viewState.showDownloadingItemsProgress(false)
 
         when(nearVenuesSearchResultCode) {
             NearVenuesSearchResultCode.OK -> hideVenueListErrors()
@@ -155,6 +162,9 @@ class NearbyVenuesSearchPresenter
 
     companion object {
         private const val TAG = "NearVenuesSearch"
+
+        const val WAIT_LOCATION_TIMEOUT_MS: Long = 1000 * 60
+
         const val DEFAULT_PAGE_SIZE = 10
         const val DEFAULT_INITIAL_PAGE_SIZE_FACTOR = 1
 

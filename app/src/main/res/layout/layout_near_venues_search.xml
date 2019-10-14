@@ -16,6 +16,17 @@
         app:layout_constraintStart_toStartOf="parent"
         />
 
+    <ProgressBar
+        android:id="@+id/pb_waiting_for_location"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/button_near_venues_search_find_me"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
     <TextView
         android:id="@+id/tv_your_location_label"
         android:layout_width="wrap_content"

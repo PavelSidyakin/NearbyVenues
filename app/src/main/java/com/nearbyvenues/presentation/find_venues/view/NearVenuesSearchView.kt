@@ -29,7 +29,13 @@ interface NearVenuesSearchView : MvpView {
     fun enableFilterVenueChips(enable: Boolean)
 
     @StateStrategyType(AddToEndSingleStrategy ::class)
-    fun showProgress(show: Boolean)
+    fun enableLocateMeButton(enable: Boolean)
+
+    @StateStrategyType(AddToEndSingleStrategy ::class)
+    fun showDownloadingItemsProgress(show: Boolean)
+
+    @StateStrategyType(AddToEndSingleStrategy ::class)
+    fun showWaitingForLocationProgress(show: Boolean)
 
     @StateStrategyType(AddToEndSingleStrategy ::class)
     fun showNoConnectionError(show: Boolean)

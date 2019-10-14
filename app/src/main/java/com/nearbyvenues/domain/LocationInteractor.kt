@@ -4,6 +4,5 @@ import com.nearbyvenues.model.Coordinates
 
 interface LocationInteractor {
 
-    suspend fun getLastLocation(): Coordinates?
-
+    suspend fun requestLocation(timeout: Long): Coordinates?
 }
