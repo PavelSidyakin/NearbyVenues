@@ -19,6 +19,8 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 class NearbyVenuesSearchInteractorImpl
@@ -83,11 +85,13 @@ class NearbyVenuesSearchInteractorImpl
                 if (pageTokens.isNotEmpty()) NextPageData(location, pageTokens) else null
             )
         } catch (throwable: Throwable) {
+            log { i(TAG, "NearbyVenuesSearchInteractorImpl.findNextVenuesImpl()", throwable) }
             return NearbyVenuesSearchResult(NearVenuesSearchResultCode.GENERAL_ERROR, null, null)
         }
     }
 
     private suspend fun requestVenuesForList(location: Coordinates, venueTypes: List<VenueType>): List<NearVenuesSearchRequestResult> {
+        val requestVenuesResultsMutex = Mutex()
         val requestVenuesResults = mutableListOf<NearVenuesSearchRequestResult>()
         val deferredList = mutableListOf<Deferred<Any>>()
         venueTypes.forEach { venueType ->
@@ -99,7 +103,9 @@ class NearbyVenuesSearchInteractorImpl
                 val result: NearVenuesSearchRequestResult?
                 result = cacheResult ?: nearbyVenuesSearchRepository.requestVenues(location, venueType)
 
-                requestVenuesResults.add(result)
+                requestVenuesResultsMutex.withLock {
+                    requestVenuesResults.add(result)
+                }
 
                 if (cacheResult == null && result.resultCode == NearVenuesSearchRequestResultCode.OK) {
                     nearbyVenuesSearchCacheRepository.putRequestVenuesResult(location, venueType, result)
