@@ -40,7 +40,7 @@ class NearbyVenuesSearchPresenter
 
     override val coroutineContext: CoroutineContext get() = job + dispatcherProvider.main()
 
-    private val retryChannel = BroadcastChannel<Any>(1)
+    private var retryChannel = BroadcastChannel<Any>(1)
 
     private val pageListConfig by lazy { PagedList.Config.Builder()
         .setPageSize(DEFAULT_PAGE_SIZE)
@@ -106,6 +106,7 @@ class NearbyVenuesSearchPresenter
             GlobalScope.launch {
 
                 currentLocation?.let { currentLocation ->
+                    reCreateRetryChannel()
                     viewState.updateVenueList(buildDataSource(currentLocation, currentVenues))
                 }
 
@@ -114,6 +115,11 @@ class NearbyVenuesSearchPresenter
             viewState.clearList()
         }
 
+    }
+
+    private fun reCreateRetryChannel() {
+        retryChannel.cancel()
+        retryChannel = BroadcastChannel(1)
     }
 
     fun onShowRationaleForLocationPermission(request: PermissionRequest) {
@@ -158,6 +164,12 @@ class NearbyVenuesSearchPresenter
     private fun hideVenueListErrors() {
         viewState.showGeneralError(false)
         viewState.showNoConnectionError(false)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        retryChannel.cancel()
     }
 
     companion object {

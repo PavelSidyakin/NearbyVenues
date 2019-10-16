@@ -99,7 +99,6 @@ class NearbyVenuesDataSource @ExperimentalCoroutinesApi constructor(
     override fun loadBefore(params: LoadParams<NextPageData>, callback: LoadCallback<NextPageData, Venue>) {
     }
 
-
     private fun retry() {
         retryRunnable?.run()
     }
