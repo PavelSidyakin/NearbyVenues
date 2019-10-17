@@ -16,9 +16,9 @@ import com.nearbyvenues.model.domain.Venue
 import com.nearbyvenues.utils.logs.log
 import com.nearbyvenues.utils.pmap
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
@@ -91,47 +91,52 @@ class NearbyVenuesSearchInteractorImpl
     }
 
     private suspend fun requestVenuesForList(location: Coordinates, venueTypes: List<VenueType>): List<NearVenuesSearchRequestResult> {
-        val requestVenuesResultsMutex = Mutex()
-        val requestVenuesResults = mutableListOf<NearVenuesSearchRequestResult>()
-        val deferredList = mutableListOf<Deferred<Any>>()
-        venueTypes.forEach { venueType ->
-            deferredList.add(GlobalScope.async {
+        return coroutineScope {
+            val requestVenuesResultsMutex = Mutex()
+            val requestVenuesResults = mutableListOf<NearVenuesSearchRequestResult>()
+            val deferredList = mutableListOf<Deferred<Any>>()
+            venueTypes.forEach { venueType ->
+                deferredList.add(async {
 
-                val cacheResult: NearVenuesSearchRequestResult? = nearbyVenuesSearchCacheRepository.requestVenues(location, venueType)
+                    val cacheResult: NearVenuesSearchRequestResult? = nearbyVenuesSearchCacheRepository.requestVenues(location, venueType)
 
-                log { i(TAG, "NearbyVenuesSearchInteractorImpl.requestVenuesForList(). cacheResult=$cacheResult") }
-                val result: NearVenuesSearchRequestResult?
-                result = cacheResult ?: nearbyVenuesSearchRepository.requestVenues(location, venueType)
+                    log { i(TAG, "NearbyVenuesSearchInteractorImpl.requestVenuesForList(). cacheResult=$cacheResult") }
+                    val result: NearVenuesSearchRequestResult?
+                    result = cacheResult ?: nearbyVenuesSearchRepository.requestVenues(location, venueType)
 
-                requestVenuesResultsMutex.withLock {
-                    requestVenuesResults.add(result)
-                }
+                    requestVenuesResultsMutex.withLock {
+                        requestVenuesResults.add(result)
+                    }
 
-                if (cacheResult == null && result.resultCode == NearVenuesSearchRequestResultCode.OK) {
-                    nearbyVenuesSearchCacheRepository.putRequestVenuesResult(location, venueType, result)
-                }
+                    if (cacheResult == null && result.resultCode == NearVenuesSearchRequestResultCode.OK) {
+                        nearbyVenuesSearchCacheRepository.putRequestVenuesResult(location, venueType, result)
+                    }
 
-            })
+                })
 
+            }
+
+            deferredList.awaitAll()
+
+            requestVenuesResults
         }
-
-        deferredList.awaitAll()
-
-        return requestVenuesResults
     }
 
     private suspend fun requestVenuesForNextPageData(nextPageData: NextPageData): List<NearVenuesSearchRequestResult> {
-        val requestVenuesResults = mutableListOf<NearVenuesSearchRequestResult>()
-        val deferredList = mutableListOf<Deferred<Any>>()
-        nextPageData.nextPageTokens.forEach { nextPageToken ->
-            deferredList.add(GlobalScope.async {
-                requestVenuesResults.add(nearbyVenuesSearchRepository.requestVenuesNextPage(nextPageToken))
-            })
+        return coroutineScope {
+
+            val requestVenuesResults = mutableListOf<NearVenuesSearchRequestResult>()
+            val deferredList = mutableListOf<Deferred<Any>>()
+            nextPageData.nextPageTokens.forEach { nextPageToken ->
+                deferredList.add(async {
+                    requestVenuesResults.add(nearbyVenuesSearchRepository.requestVenuesNextPage(nextPageToken))
+                })
+            }
+
+            deferredList.awaitAll()
+
+            requestVenuesResults
         }
-
-        deferredList.awaitAll()
-
-        return requestVenuesResults
     }
 
     private suspend fun convertVenueDataToVenue(startPoint: Coordinates, venueData: VenueData): Venue {

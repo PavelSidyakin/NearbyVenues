@@ -10,9 +10,9 @@ import com.nearbyvenues.model.domain.NextPageData
 import com.nearbyvenues.model.domain.Venue
 import com.nearbyvenues.presentation.find_venues.presenter.NearbyVenuesSearchPresenter
 import com.nearbyvenues.utils.logs.log
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -26,12 +26,12 @@ class NearbyVenuesDataSource @ExperimentalCoroutinesApi constructor(
     private val venueTypes: List<VenueType>,
     private val nearbyVenuesSearchInteractor: NearbyVenuesSearchInteractor,
     private val nearbyVenuesSearchPresenter: NearbyVenuesSearchPresenter,
-    private val coroutineContext: CoroutineContext,
+    override val coroutineContext: CoroutineContext,
     private val retryChannel: BroadcastChannel<Any>
-    ) : PageKeyedDataSource<NextPageData, Venue>() {
+    ) : PageKeyedDataSource<NextPageData, Venue>(), CoroutineScope {
 
     init {
-        GlobalScope.launch(coroutineContext) {
+        launch {
             retryChannel.asFlow()
                 .collect {
                     retry()
@@ -42,7 +42,7 @@ class NearbyVenuesDataSource @ExperimentalCoroutinesApi constructor(
     private var retryRunnable: Runnable? = null
 
     override fun loadInitial(params: LoadInitialParams<NextPageData>, callback: LoadInitialCallback<NextPageData, Venue>) {
-        GlobalScope.launch (coroutineContext) {
+        launch {
             try {
 
                 nearbyVenuesSearchPresenter.onRequestStarted()
@@ -70,7 +70,7 @@ class NearbyVenuesDataSource @ExperimentalCoroutinesApi constructor(
     }
 
     override fun loadAfter(params: LoadParams<NextPageData>, callback: LoadCallback<NextPageData, Venue>) {
-        GlobalScope.launch (coroutineContext) {
+        launch {
             try {
 
                 nearbyVenuesSearchPresenter.onRequestStarted()

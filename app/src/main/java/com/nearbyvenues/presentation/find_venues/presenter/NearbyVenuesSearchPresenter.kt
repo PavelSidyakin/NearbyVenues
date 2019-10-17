@@ -16,8 +16,8 @@ import com.nearbyvenues.utils.logs.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.launch
 import permissions.dispatcher.PermissionRequest
@@ -36,9 +36,7 @@ class NearbyVenuesSearchPresenter
         private val dispatcherProvider: DispatcherProvider
     ) : MvpPresenter<NearVenuesSearchView>(), CoroutineScope {
 
-    private val job = Job()
-
-    override val coroutineContext: CoroutineContext get() = job + dispatcherProvider.main()
+    override val coroutineContext: CoroutineContext get() = Job() + dispatcherProvider.main()
 
     private var retryChannel = BroadcastChannel<Any>(1)
 
@@ -60,7 +58,7 @@ class NearbyVenuesSearchPresenter
     }
 
     fun onLocateMePressed() {
-        GlobalScope.launch(dispatcherProvider.main()) {
+        launch {
             viewState.showCannotLocateError(false)
             viewState.showWaitingForLocationProgress(true)
             viewState.enableLocateMeButton(false)
@@ -90,8 +88,8 @@ class NearbyVenuesSearchPresenter
         val factory = NearbyVenuesDataSourceFactory(location, venueTypes, nearbyVenuesSearchInteractor,this, coroutineContext, retryChannel)
 
         return PagedList.Builder(factory.create(), pageListConfig)
-            .setNotifyExecutor { GlobalScope.launch(dispatcherProvider.main()) { it.run() } }
-            .setFetchExecutor { GlobalScope.launch(dispatcherProvider.io()) { it.run() } }
+            .setNotifyExecutor { launch { it.run() } }
+            .setFetchExecutor { launch(dispatcherProvider.io()) { it.run() } }
             .build()
     }
 
@@ -103,7 +101,7 @@ class NearbyVenuesSearchPresenter
 
         if (currentVenues.isNotEmpty()) {
 
-            GlobalScope.launch {
+            launch {
 
                 currentLocation?.let { currentLocation ->
                     reCreateRetryChannel()
@@ -135,7 +133,7 @@ class NearbyVenuesSearchPresenter
     }
 
     fun onErrorClicked() {
-        GlobalScope.launch(coroutineContext) {
+        launch {
             retryChannel.send(Any())
         }
     }
@@ -169,6 +167,7 @@ class NearbyVenuesSearchPresenter
     override fun onDestroy() {
         super.onDestroy()
 
+        coroutineContext.cancel()
         retryChannel.cancel()
     }
 
