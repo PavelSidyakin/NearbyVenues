@@ -48,11 +48,11 @@ class NearVenuesSearchActivity : MvpAppCompatActivity(), NearVenuesSearchView {
 
     @ProvidePresenter
     fun providePresenter(): NearbyVenuesSearchPresenter {
-        return TheApplication.getAppComponent().getNearVenuesSearchPresenter()
+        return TheApplication.getAppComponent().getSearchVenuesComponent().getNearVenuesSearchPresenter()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        TheApplication.getAppComponent().inject(this)
+        TheApplication.getAppComponent().getSearchVenuesComponent().inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_near_venues_search)
 

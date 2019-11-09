@@ -3,6 +3,7 @@ package com.nearbyvenues.presentation.find_venues.presenter
 import androidx.paging.PagedList
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.nearbyvenues.di.PerFeature
 import com.nearbyvenues.domain.LocationInteractor
 import com.nearbyvenues.domain.NearbyVenuesSearchInteractor
 import com.nearbyvenues.model.Coordinates
@@ -27,6 +28,7 @@ import kotlin.coroutines.CoroutineContext
 @FlowPreview
 @ExperimentalCoroutinesApi
 @InjectViewState
+@PerFeature
 class NearbyVenuesSearchPresenter
 
     @Inject
@@ -52,6 +54,8 @@ class NearbyVenuesSearchPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
+        log { i(TAG, "NearbyVenuesSearchPresenter.onFirstViewAttach(). ") }
+        
         viewState.addChipsForVenues(VenueType.values().asList())
 
         viewState.enableFilterVenueChips(false)
@@ -167,11 +171,12 @@ class NearbyVenuesSearchPresenter
     override fun onDestroy() {
         super.onDestroy()
 
+        log { i(TAG, "NearbyVenuesSearchPresenter.onDestroy(). ") }
         coroutineContext.cancel()
         retryChannel.cancel()
     }
 
-    companion object {
+    private companion object {
         private const val TAG = "NearVenuesSearch"
 
         const val WAIT_LOCATION_TIMEOUT_MS: Long = 1000 * 60

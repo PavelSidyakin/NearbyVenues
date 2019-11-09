@@ -1,8 +1,8 @@
 package com.nearbyvenues
 
 import android.app.Application
-import com.nearbyvenues.di.AppComponent
-import com.nearbyvenues.di.DaggerAppComponent
+import com.nearbyvenues.di.app.AppComponent
+import com.nearbyvenues.di.app.DaggerAppComponent
 import com.nearbyvenues.domain.data.ApplicationProvider
 import javax.inject.Inject
 

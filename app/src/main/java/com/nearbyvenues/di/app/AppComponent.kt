@@ -1,8 +1,10 @@
-package com.nearbyvenues.di
+package com.nearbyvenues.di.app
 
 import com.nearbyvenues.TheApplication
+import com.nearbyvenues.di.location.LocationModule
+import com.nearbyvenues.di.screen.SearchVenuesComponent
+import com.nearbyvenues.di.venues.VenuesModule
 import com.nearbyvenues.presentation.find_venues.presenter.NearbyVenuesSearchPresenter
-import com.nearbyvenues.presentation.find_venues.view.NearVenuesSearchActivity
 import dagger.Component
 import javax.inject.Singleton
 
@@ -10,9 +12,8 @@ import javax.inject.Singleton
 @Singleton
 interface AppComponent {
     fun inject(theApplication: TheApplication)
-    fun inject(theApplication: NearVenuesSearchActivity)
 
-    fun getNearVenuesSearchPresenter(): NearbyVenuesSearchPresenter
+    fun getSearchVenuesComponent(): SearchVenuesComponent
 
     interface Builder {
         fun build(): AppComponent
